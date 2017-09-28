@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TrabalhoMauricio</string>
+
+        <string-array name="spinnerItems">
+            <item>Legumes</item>
+            <item>Verduras</item>
+            <item>Carnes</item>
+            <item>Massas</item>
+        </string-array>
+</resources>
