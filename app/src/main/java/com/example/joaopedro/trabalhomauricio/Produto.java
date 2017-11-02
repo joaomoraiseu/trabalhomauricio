@@ -1,12 +1,20 @@
 package com.example.joaopedro.trabalhomauricio;
 
+import android.content.Context;
+
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Joao Pedro on 16/09/2017.
  */
 
-public class Produto {
+public class Produto extends RealmObject {
+    @PrimaryKey
+    private Integer Id;
     private Integer Quantidade;
     private String Nome;
     private boolean Perecivel;
@@ -20,6 +28,18 @@ public class Produto {
         Nome = nome;
         Perecivel = perecivel;
         Categoria = categoria;
+
+    }
+    public Produto(){
+
+    }
+    public void addRecord(Produto produto ,Context contexto) {
+        Realm realm;
+        Realm.init(contexto);
+        realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealm(produto);
+        realm.commitTransaction();
     }
 
     public Integer getQuantidade() {
@@ -52,5 +72,13 @@ public class Produto {
 
     public void setCategoria(String categoria) {
         Categoria = categoria;
+    }
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
     }
 }

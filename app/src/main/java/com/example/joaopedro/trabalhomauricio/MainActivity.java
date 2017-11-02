@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import io.realm.Realm;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button botaoIniciar = (Button)findViewById(R.id.btIniciar);
+
         botaoIniciar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {

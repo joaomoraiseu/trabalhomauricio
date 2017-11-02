@@ -1,5 +1,6 @@
 package com.example.joaopedro.trabalhomauricio;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,23 +12,46 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
 
 public class ListaProdutosActivity extends AppCompatActivity {
-
+    Realm realm;
     ProdutosAdapter adapter;
     ListView listView;
-    ArrayList<Produto> listaProdutos = new ArrayList<Produto>();
+    ArrayList<Produto> produtos = new ArrayList<Produto>();
+
+    @Override
+    protected void onDestroy() {
+        realm.close();
+        super.onDestroy();
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_produtos);
+
         Button adicionar = (Button)findViewById(R.id.botaoAdicionar);
         Bundle args = getIntent().getExtras();
         getSupportActionBar().setTitle(args.getString("nomeLista"));
         listView = (ListView)findViewById(R.id.listView);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setTextFilterEnabled(true);
-        adapter = new ProdutosAdapter(this,android.R.layout.simple_list_item_checked, listaProdutos);
+
+        //IniciaRealm
+        Realm.init(this);
+        realm = Realm.getDefaultInstance();
+        //get all produtos
+        RealmResults<Produto> produtosRealm = realm.where(Produto.class).findAll();
+        //Convert RealmResults to ArrayList
+        produtos.addAll(realm.copyFromRealm(produtosRealm));
+
+        adapter = new ProdutosAdapter(this,android.R.layout.simple_list_item_checked, produtos);
+
         listView.setAdapter(adapter);
         adicionar.setOnClickListener(new View.OnClickListener() {
 
@@ -44,15 +68,22 @@ public class ListaProdutosActivity extends AppCompatActivity {
                 }
                 boolean perecivel = checkPerecivel.isChecked();
                 Produto p = new Produto(quantidade,nomeProduto,perecivel,categoria);
-                listaProdutos.add(p);
+                produtos.add(p);
+                //Chama metódo para salvar o produto
+                RealmService.addProduto(p,realm);
                 adapter.notifyDataSetChanged();
             }
+
         });
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position,
                                     long id) {
             }
+
         });
+
     }
+
 }
